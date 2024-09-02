@@ -1,0 +1,28 @@
+#slider {
+  min-height: 70vh;
+  margin: 0;
+  background-color: var(--primary-color);
+
+  display: flex;
+  align-items: center;
+
+  color: white;
+}
+
+
+
+#slider > div {
+  flex-basis: 100%;
+}
+
+
+#slider img {
+  display: block;
+  margin: auto;
+}
+
+
+#slider > i {
+  
+  margin: 0px 50px;
+}

@@ -1,0 +1,17 @@
+{
+    "name": "fahd/nss",
+    "description": "NSS IITM Website",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Fahd\\NSS\\": "logic/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Worthy Programmer",
+            "email": "worthyprogrammer@gmail.com"
+        }
+    ],
+    "require": {}
+}
