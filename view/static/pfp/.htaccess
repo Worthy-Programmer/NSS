@@ -1,0 +1,2 @@
+# Disable access to the current directory (Apache 2.4 and above)
+Require all denied
