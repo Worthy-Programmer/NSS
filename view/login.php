@@ -1,3 +1,13 @@
+<?php
+  require '../vendor/autoload.php';
+  use Fahd\NSS\SessionHandler;
+
+  if (SessionHandler::isLoggedIn()) {
+    header("Location: ./dashboard.php");
+    exit;
+  }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,7 +42,7 @@
     </div>
     <i id="hamburger" class="fas fa-bars"></i>
     <nav>
-      <a href="./">Home</a><a href="./login.html" class="active">Login</a>
+      <a href="./">Home</a><a href="./login.php" class="active">Login</a>
     </nav>
   </header>
 

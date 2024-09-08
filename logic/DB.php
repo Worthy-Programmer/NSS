@@ -34,7 +34,7 @@ class DB {
     }
   }
 
-  public function escape(string $str) {
+  public function escape(string $str): string {
     return $this->conn->real_escape_string($str);
   }
 }

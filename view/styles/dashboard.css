@@ -1,0 +1,38 @@
+#profile {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  /* max-width: 80vw; */
+  margin: auto;
+
+}
+
+
+
+#pfp {
+  margin: 50px;
+  min-width:10vw;
+  max-width: 20vw;
+  /* max-height: 50vh; */
+}
+
+label[for="pfpToUpload"] {
+  display: block;
+  margin: 10px 0px;
+
+  color: var(--primary-color);
+}
+
+@media screen and (width < 576px) {
+  #profile {
+    flex-direction: column;
+  }
+
+  #pfp {
+    max-width: 90vw;
+  }
+
+  #profile>div {
+    max-width: 80vw;
+  }
+}

@@ -10,11 +10,12 @@ class CookieHandler {
   }
   
   static function create(string $username) {
-    setcookie('id', $username, time() + 7 *24*60*60, '/');
+    setcookie('id', $username, time() + 7 *24*60*60);
   }
 
   function destroy() {
-    if ($this::exists()) setcookie('id', $this->username, 0, '/');
+    if ($this::exists()) setcookie('id', "", 0);
+    unset($_COOKIE['id']);
   }
 
   static function exists () {return isset($_COOKIE['id']);}

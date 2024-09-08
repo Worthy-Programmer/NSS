@@ -31,4 +31,5 @@ class Login {
   private function cleanCred(): void {
     $this->username = $this->db->escape(strtolower($this->username));
   }
+
 }
