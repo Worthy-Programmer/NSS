@@ -16,5 +16,5 @@ NOTE: Product showcase is at NSS IITM.mov
   - Install composer from the link above, if you haven't installed it.
   - Go to the directory in command prompt / terminal and run `composer install`.
 
-5. **Open the webpage in localhost**
+4. **Open the webpage in localhost**
   - Now view the webpage at localhost through the link. The index page is at view/index.html.
