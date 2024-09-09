@@ -18,3 +18,5 @@ NOTE: Product showcase is at NSS IITM.mov
 
 4. **Open the webpage in localhost**
   - Now view the webpage at localhost through the link. The index page is at view/index.html.
+
+For any difficulties, don't hesitate to contact me.
