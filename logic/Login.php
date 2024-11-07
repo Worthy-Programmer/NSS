@@ -1,8 +1,6 @@
 <?php
 namespace Fahd\NSS;
 
-require '../vendor/autoload.php';
-
 
 use Fahd\NSS\DB as DB;
 

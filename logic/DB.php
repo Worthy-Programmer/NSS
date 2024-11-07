@@ -2,22 +2,23 @@
 namespace Fahd\NSS;
 
 class DB {
-  private string $host;
-  private string $username;
-  private string $password;
-  private string $dbName;
+  static private string $host;
+  static private string $username;
+  static private string $password;
+  static private string $dbName;
 
   public \Mysqli $conn;
 
   public function __construct($file='settings.ini')
   {
+    if(isset(DB::$host)) return;
     if (!$settings = parse_ini_file($file, TRUE)) throw new \exception('Unable to open ' . $file . '.');
 
     $db = $settings['database'];
-    $this->host = $db['host'];
-    $this->username = $db['username'];
-    $this->password = $db['password'];
-    $this->dbName = $db['db'];
+    $this::$host = $db['host'];
+    $this::$username = $db['username'];
+    $this::$password = $db['password'];
+    $this::$dbName = $db['db'];
   }
 
 
@@ -27,7 +28,7 @@ class DB {
   }
 
   public function connect(): void {
-    $this->conn = new \mysqli($this->host, $this->username, $this->password, $this->dbName);
+    $this->conn = new \mysqli($this::$host, $this::$username, $this::$password, $this::$dbName);
 
     if ($this->conn->connect_error) {
       throw new \exception("Connection failed: " . $this->conn->connect_error);

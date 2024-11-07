@@ -2,12 +2,12 @@
 
 namespace Fahd\NSS;
 
-require_once "../vendor/autoload.php";
 
 
 class User {
   public string $name;
   public int $credits;
+  private int $role;
 
   public function __construct(public string $id) {}
   
@@ -22,9 +22,20 @@ class User {
 
     $this->name = $row['name'];
     $this->credits = + $row['credits'];
+    $this->role = + $row ['role'];
   }
 
-  // public function setPFP() {
+  public function isVolunteer() {
+    return $this->role === 0;
+  }
 
-  // }
+  static function getUsers(string $name_exp): array {
+    $db = new DB();
+    $db->connect();
+
+    $query = sprintf("SELECT id, name, credits FROM user WHERE id LIKE '%s'", $db->escape($name_exp));
+    $res = $db->conn->query($query);
+    return $res->fetch_all();
+  }
+
 }

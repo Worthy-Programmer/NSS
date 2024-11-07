@@ -1,0 +1,33 @@
+#select, #edit, .form.jumbotron {
+  li {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* justify-content: space-between; */
+  }
+}
+
+#credits_sheet {
+  grid-column: span 2;
+
+  border-collapse: collapse;
+      border: 1px solid;
+
+
+  th,td {
+    padding: 10px;
+    /* border: 1px solid; */
+    text-align: center;
+    /* background-color: var(--gray); */
+  }
+
+  th {
+    background-color: var(--primary-color);
+    color: white;
+
+  }
+
+  tr:nth-child(even) {
+    background-color: rgba(39, 50, 127,0.1);
+  }
+
+}

@@ -1,0 +1,40 @@
+body {
+  min-height: 100vh;
+}
+
+.jumbotron {
+  background-color: var(--gray);
+  padding: 20px ;
+
+  border-radius: 10px;
+}
+
+#wrapper {
+  display: grid;
+  align-self: center;
+  max-width: 80vw;
+  margin: auto;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: minmax(100px, auto);
+  gap: 50px 20px;
+
+
+
+  ul {
+    list-style: none;
+    padding-left: 0px;
+
+    li {
+      padding: 5px 0px;
+
+      a {
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+

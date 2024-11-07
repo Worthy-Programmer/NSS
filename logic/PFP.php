@@ -2,9 +2,6 @@
 
 namespace Fahd\NSS;
 
-require '../vendor/autoload.php';
-
-
 
 class PFP
 {

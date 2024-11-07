@@ -22,6 +22,7 @@ body {
 /* Color */
 body {
   --primary-color: rgb(39,50,127);
+  --gray:rgba(127, 140, 141, 0.2);
 }
 
 
