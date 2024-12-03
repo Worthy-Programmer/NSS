@@ -4,3 +4,4 @@ run_sql.php
 logic/Database/settings.ini
 nss.sql
 nss.sql.gz
+nss_iitm.sql
