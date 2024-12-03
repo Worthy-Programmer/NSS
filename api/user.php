@@ -2,10 +2,10 @@
 
 header("Content-Type:application/json");
 
-use Fahd\NSS\Response;
-use Fahd\NSS\SessionHandler;
-use Fahd\NSS\Status;
-use Fahd\NSS\User;
+use Fahd\NSS\Utils\Response;
+use Fahd\NSS\Auth\SessionHandler;
+use Fahd\NSS\Utils\Status;
+use Fahd\NSS\Users\User;
 
 require '../vendor/autoload.php';
 
