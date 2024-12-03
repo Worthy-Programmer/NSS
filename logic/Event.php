@@ -67,7 +67,7 @@ class Event
     $db = new DB();
     $db->connect();
 
-    $id_exp = $id_exp or '*';
+    // $id_exp = $id_exp or '*';
     $name_exp = $db->escape($name_exp) or '*';
 
   
