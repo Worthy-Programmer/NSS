@@ -2,6 +2,7 @@
 
 namespace Fahd\NSS;
 
+use Fahd\NSS\Database\DB;
 use DateTime;
 
 class Event
@@ -63,17 +64,17 @@ class Event
     $this->endDatetimeString = $this->endDatetime->format('Y-m-d\TH:i');
   }
 
-  static function getEvents(string $name_exp): array {
-    $db = new DB();
-    $db->connect();
+  // static function getEvents(string $name_exp): array {
+  //   $db = new DB();
+  //   $db->connect();
 
-    // $id_exp = $id_exp or '*';
-    $name_exp = $db->escape($name_exp) or '*';
+  //   // $id_exp = $id_exp or '*';
+  //   $name_exp = $db->escape($name_exp) or '*';
 
   
-    $query = sprintf("SELECT * FROM WHERE `id`=%d AND `name` LIKE  LIMIT 50", $id_exp, $name_exp);
-    $res = $db->conn->query($query);
+  //   // $query = sprintf("SELECT * FROM WHERE `id`=%d AND `name` LIKE  LIMIT 50", $id_exp, $name_exp);
+  //   $res = $db->conn->query($query);
 
-    return $res->fetch_all();
-  }
+  //   return $res->fetch_all();
+  // }
 }

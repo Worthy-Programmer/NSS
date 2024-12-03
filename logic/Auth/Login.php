@@ -1,8 +1,8 @@
 <?php
-namespace Fahd\NSS;
+namespace Fahd\NSS\Auth;
 
 
-use Fahd\NSS\DB as DB;
+use Fahd\NSS\Database\DB;
 
 class Login {
   private DB $db;
