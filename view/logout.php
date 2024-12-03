@@ -1,6 +1,6 @@
 <?php
 
-use Fahd\NSS\CookieHandler;
+use Fahd\NSS\Auth\CookieHandler;
 
 require '../vendor/autoload.php';
 

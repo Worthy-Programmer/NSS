@@ -40,7 +40,7 @@ require_once "./access_restrict.php";
     <nav>
       <a href="./" class="active">Dashboard</a>
       <a href="./credits.php">Credits</a>
-      <a href="./events.php" s>Events</a>
+      <a href="./events/edit.php" >Events</a>
       <a href="../logout.php">Logout</a>
     </nav>
   </header>

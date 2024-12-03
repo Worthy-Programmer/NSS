@@ -1,6 +1,6 @@
 <?php
   require '../vendor/autoload.php';
-  use Fahd\NSS\SessionHandler;
+  use Fahd\NSS\Auth\SessionHandler;
 
   if (SessionHandler::isLoggedIn()) {
     header("Location: ./dashboard.php");

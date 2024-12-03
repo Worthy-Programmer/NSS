@@ -1,7 +1,7 @@
 <?php
 
-use Fahd\NSS\SessionHandler;
-use Fahd\NSS\User;
+use Fahd\NSS\Auth\SessionHandler;
+use Fahd\NSS\Users\User;
 
 require '../vendor/autoload.php';
 if (!SessionHandler::isLoggedIn()) header("Location: ./login.php");

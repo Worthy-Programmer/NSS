@@ -1,6 +1,6 @@
 <?php
-use Fahd\NSS\SessionHandler;
-use Fahd\NSS\User;
+use Fahd\NSS\Auth\SessionHandler;
+use Fahd\NSS\Users\User;
 
 if (!SessionHandler::isLoggedIn()) header("Location: ../login.php");
 
@@ -13,5 +13,3 @@ if($user->isVolunteer()) {
   header("HTTP/1.0 404 Not Found");
   exit;
 }
-
-
