@@ -1,6 +1,32 @@
 <?php
+
+use Fahd\NSS\Users\UserList;
+
 require_once '../../vendor/autoload.php';
-require_once "./access_restrict.php"
+require_once "./access_restrict.php";
+
+$users = [];
+
+$post_names = ['mass_edit_select', 'credits'];
+$is_post_fields_present = array_reduce($post_names, fn($carry, $name) => $carry && isset($_POST[$name]), true);
+
+if ($is_post_fields_present) {
+  $userList = UserList::filterFields();
+
+  if ($userList->ids && in_array($_POST['mass_edit_select'], ["add", "set"])) {
+    $res = call_user_func([&$userList, $_POST['mass_edit_select'] . 'Credits'], (int) $_POST['credits']);
+  }
+}
+
+$get_names = ['credits', 'id', 'id_select', 'credits_select'];
+$is_get_fields_present  = array_reduce($get_names, fn($carry, $name) => $carry && isset($_GET[$name]), true);
+
+if ($is_get_fields_present) {
+  $users = UserList::getUsers($_GET['id_select'], $_GET['id'], $_GET['credits_select'],  $_GET['credits'] == "" ? null: (int) $_GET['credits']);
+  $number_filter_selected = $_GET['credits_select'];
+  $string_filter_selected = $_GET['id_select'];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -42,7 +68,7 @@ require_once "./access_restrict.php"
     <nav>
       <a href="./">Dashboard</a>
       <a href="./credits.php" class="active">Credits</a>
-      <a href="./events.php">Events</a>
+      <a href="./events/edit.php">Events</a>
       <a href="../logout.php">Logout</a>
     </nav>
   </header>
@@ -53,13 +79,27 @@ require_once "./access_restrict.php"
 <div id="wrapper">
 
   <section class="jumbotron" id="select">
-    <h3>SELECT</h3>
+    <h3>SELECT USERS</h3>
 
-    <form action="">
+    <form action="" method="GET">
       <ul>
-        <li><label for="id">ID</label> <input type="text" id="id" /></li>
-        <li><label for="credits">Credits</label>
-          <input type="text" id="credits" />
+        <li>
+          <label for="id">ID</label>
+          <select name="id_select" id="id_select">
+            <?php include './utils/string_filter.php' ?>
+          </select>
+
+          <input type="text" id="id" name="id" value="<?= htmlspecialchars($_GET['id'] ?? '') ?>" />
+
+        </li>
+
+
+        <li>
+          <label for="credits">Credits</label>
+          <select name="credits_select" id="credits_select">
+            <?php include './utils/number_filter.php' ?>
+          </select>
+          <input type="number" name="credits" id="credits" value="<?= htmlspecialchars($_GET['credits'] ?? '') ?>" />
         </li>
       </ul>
       <input type="submit" value="Submit" />
@@ -67,53 +107,55 @@ require_once "./access_restrict.php"
     </form>
   </section>
 
+  <?php if ($users): ?>
 
-  <section class="jumbotron" id="edit">
-    <h3>EDIT</h3>
-    <ul>
-      <li><label for="id">Change Credits</label> <input type="text" id="id" /></li>
-      <li><label for="credits">Attach to Event</label>
+    <form action="" method="POST" class="jumbotron" id="edit">
+      <h3>MASS EDIT</h3>
 
+      <ul>
+        <li>
 
-        <select name="" id="" multiple>
-          <option value="">Event 1</option>
-          <option value="">Event 2</option>
-          <option value="">Event 3</option>
-          <option value="">Event 4</option>
-        </select>
-      </li>
-    </ul>
-    <input type="submit" value="Submit" />
-  </section>
+          <select name="mass_edit_select" id="mass_edit_select">
+            <option value="add">Add Credits by</option>
+            <option value="set">Set Credits to</option>
+          </select>
 
-  <table id="credits_sheet">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Credits</th>
-      </tr>
-    </thead>
+          <input type="number" name="credits"  required />
+        </li>
 
-    <tbody>
-      <tr>
-        <td>Lorem2</td>
-        <td>Lorem2</td>
-        <td>Lorem2</td>
-      </tr>
-      <tr>
-        <td>Lorem2</td>
-        <td>Lorem2</td>
-        <td>Lorem2</td>
-      </tr>
-      <tr>
-        <td>Lorem2</td>
-        <td>Lorem2</td>
-        <td>Lorem2</td>
-      </tr>
-    </tbody>
-  </table>
+      </ul>
+      <button type="button" id="select_all_btn">Select All</button>
+      <button type="button" id="deselect_all_btn">Deselect All</button>
 
+      <input type="submit" value="Edit" disabled/>
+    </form>
+
+    <table id="credits_sheet">
+      <thead>
+        <tr>
+          <th></th>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Credits</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <?php foreach ($users as $user) : ?>
+          <tr>
+            <td><input type="checkbox" form="edit" name="u_<?= htmlspecialchars($user['id']) ?>"></td>
+            <td><?= htmlspecialchars(strtoupper($user['id'])) ?> </td>
+            <td><?= htmlspecialchars(ucwords($user['name'])) ?> </td>
+            <td><?= htmlspecialchars($user['credits']) ?></td>
+          </tr>
+        <?php endforeach ?>
+      </tbody>
+    </table>
+  <?php endif; ?>
 </div>
+
+<script src="../scripts/TableRecords.js"></script>
+
+<script src="../scripts/credits.js"></script>
 
 </html>

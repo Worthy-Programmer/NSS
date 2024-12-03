@@ -1,1 +1,6 @@
 vendor
+known_hosts
+run_sql.php
+logic/Database/settings.ini
+nss.sql
+nss.sql.gz

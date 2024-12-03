@@ -2,8 +2,14 @@
   li {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    column-gap: 3px;
+    align-items: first baseline;
     /* justify-content: space-between; */
   }
+}
+
+#select li {
+   grid-template-columns: 1fr 2fr 2fr;
 }
 
 #credits_sheet {
@@ -26,8 +32,13 @@
 
   }
 
-  tr:nth-child(even) {
+  tr:has(input:checked) {
     background-color: rgba(39, 50, 127,0.1);
   }
 
+  td:first-child {
+    width: 10px;
+  }
+
 }
+

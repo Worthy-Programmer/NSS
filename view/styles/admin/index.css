@@ -9,6 +9,34 @@ body {
   border-radius: 10px;
 }
 
+input,select {
+  padding: 3px 10px;
+}
+input[type=submit], button {
+  padding: 7px 10px;
+  background-color: var(--primary-color);
+  color: white;
+
+  border: none;
+  border-radius: 5px;
+  box-shadow: gray 1px 1px 1px;
+  transition: all;
+  transition-duration: 0.7s;
+
+  
+
+}
+
+input[type=submit]:hover:not(:disabled),
+button:hover:not(:disabled) {
+  box-shadow: none;
+  scale: 98.5%;
+}
+
+input[type=submit]:disabled, button:disabled {
+  opacity: 0.8;
+}
+
 #wrapper {
   display: grid;
   align-self: center;
@@ -38,3 +66,9 @@ body {
   }
 }
 
+
+@media screen and (width < 00px) {
+  .jumbotron {
+    grid-column: span 2;
+  }
+}
