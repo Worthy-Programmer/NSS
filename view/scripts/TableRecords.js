@@ -1,20 +1,32 @@
-// Class to create Objects to control the table records in Credits and Events
+/** 
+ * Class to create Objects to control the table records in Credits and Events 
+ * @param {NodeListOf<HTMLInputElement>} checkBoxes
+ * @param {string} tableID
+ * @param {HTMLTableElement} table
+ * */
+
 class TableRecords {
-  #isCheckedFilterOn = false
+
+  /**
+   * constructor - Create an instance of TableRecords by passing the table ID
+   * @param {string} tableID
+   */
   
   constructor(tableID) {
     this.tableID = tableID
     this.table = document.getElementById(tableID)
+
+    /** @type {NodeListOf<HTMLInputElement>} */
     this.checkBoxes = this.table.querySelectorAll('input[type="checkbox"]');
     console.log(this.checkBoxes)
   }
 
   get isAllChecked() {
-    return this.table.querySelectorAll('input[type="checkbox"]:checked').length === this.checkBoxes.length
+    return this.#checkedRecords.length === this.checkBoxes.length
   }
 
   get isAnythingChecked() {
-    return this.table.querySelectorAll('input[type="checkbox"]:checked').length > 0
+    return this.#checkedRecords.length > 0
   }
 
   checkAllRecords() {
@@ -22,27 +34,29 @@ class TableRecords {
   }
 
   deCheckAllRecords() {
-    this.checkBoxes.forEach(checkbox => (!checkbox.checked) ? null : checkbox.click());
+    this.#checkedRecords.forEach(checkbox => checkbox.click());
   }
-
 
   toggleCheckedFilter() {
-    this.isCheckedFilterOn ? this.#removeCheckedFilter() : this.#addCheckedFilter()
     this.isCheckedFilterOn = !this.isCheckedFilterOn
+    const display = this.isCheckedFilterOn ? 'none' : 'block'
+    this.#controlDisplayOfUncheckedRecords(display)
   }
 
-  #addCheckedFilter() {
+  
+  /**
+   * @param {string} display
+   */
+  #controlDisplayOfUncheckedRecords(display) {
     this.checkBoxes.forEach(checkbox => {
-      if(checkbox.checked) return
+      if (checkbox.checked) return
       const trEl = checkbox.parentElement.parentElement
-      trEl.style.display = 'none'
+      trEl.style.display = display
     })
   }
 
-  #removeCheckedFilter() {
-    this.checkBoxes.forEach(checkbox => {
-      const trEl = checkbox.parentElement.parentElement
-      trEl.style.display = 'block'
-    })
+  /** @returns {NodeListOf<HTMLInputElement>} */
+  get #checkedRecords() {
+    return this.table.querySelectorAll('input[type="checkbox"]:checked')
   }
 }
