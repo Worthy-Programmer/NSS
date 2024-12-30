@@ -1,6 +1,9 @@
-#  Application for NSS WebOps Coordinator
+#  NSS Website for Indian Institute of Technology Madras (IITM)
 
-NOTE: Product showcase is at NSS IITM.mov
+A website portal for IITM students to join NSS events.
+Contains admin portal for coordinators to provide credits to students and to enrol students to events.
+
+This website will be soon hosted on nss.iitm.ac.in
 
 ## Setup
 1. **Install MAMP/XAMPP**

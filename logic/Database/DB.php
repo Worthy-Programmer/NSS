@@ -36,7 +36,8 @@ class DB {
   }
 
   public function escape(string $str): string {
-    return $this->conn->real_escape_string($str);
+    // Removed get_magic_quotes_gpc check as it is deprecated
+    return htmlentities($this->conn->real_escape_string($str));
   }
 
   public function escapeArray(array $str_list): array {

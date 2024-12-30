@@ -1,6 +1,6 @@
 <?php
 
-namespace Fahd\NSS;
+namespace Fahd\NSS\Events;
 
 use Fahd\NSS\Database\DB;
 use DateTime;

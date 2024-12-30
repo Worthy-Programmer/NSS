@@ -1,6 +1,35 @@
 <?php
+
+use Fahd\NSS\Events\EventRecords;
+
 require_once '../../../vendor/autoload.php';
-require_once "./../access_restrict.php"
+require_once "../access_restrict.php";
+
+$events = [];
+
+$post_names = ['mass_edit_select', 'credits'];
+$is_post_fields_present = array_reduce($post_names, fn($carry, $name) => $carry && isset($_POST[$name]), true);
+
+if ($is_post_fields_present) {
+  $eventList = new EventRecords(EventRecords::filterFields());
+
+  if ($eventList->ids && in_array($_POST['mass_edit_select'], ["add", "set"])) {
+    $res = call_user_func([&$eventList, $_POST['mass_edit_select'] . 'Credits'], (int) $_POST['credits']);
+  }
+}
+
+$get_names = ['name', 'id', 'id_select', 'name_select'];
+$is_get_fields_present  = array_reduce($get_names, fn($carry, $name) => $carry && isset($_GET[$name]), true);
+
+if ($is_get_fields_present) {
+  $userList = new EventRecords;
+  $userList->colValue = ["id" => $_GET['id'], "name" => $_GET['name']];
+  $userList->colSelect = ["id" => $_GET['id_select'], "name" => $_GET['name_select']];
+  $events = $userList->getRecords();
+  $string_filter_selected = $_GET['name_select'];
+  $number_filter_selected = $_GET['id_select'];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -11,14 +40,12 @@ require_once "./../access_restrict.php"
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="../../static/logo.png" />
+  <link rel="icon" type="image/x-icon" href="../static/logo.png" />
 
   <!-- CSS Styles -->
   <link rel="stylesheet" href="../../styles/init.css" />
   <link rel="stylesheet" href="../../styles/admin/index.css" />
-  <link rel="stylesheet" href="../../styles/admin/credits.css" />
-  <!-- <link rel="stylesheet" href="../../styles/admin/events/detail.css" /> -->
-
+  <link rel="stylesheet" href="../../styles/admin/events/index.css" />
 
 
 
@@ -42,7 +69,7 @@ require_once "./../access_restrict.php"
     </div>
     <i id="hamburger" class="fas fa-bars"></i>
     <nav>
-      <a href="./">Dashboard</a>
+      <a href="../">Dashboard</a>
       <a href="../credits.php">Credits</a>
       <a href="./" class="active">Events</a>
       <a href="../../logout.php">Logout</a>
@@ -55,78 +82,91 @@ require_once "./../access_restrict.php"
 <div id="wrapper">
 
   <section class="jumbotron" id="select">
-    <h3>SELECT</h3>
+    <h3>SELECT EVENTS</h3>
 
-    <form action="">
+    <form action="" method="GET">
       <ul>
-        <li><label for="id">ID</label> <input type="text" id="id" /></li>
-        <li><label for="credits">Name</label>
-          <input type="text" id="credits" />
+        <li>
+          <label for="id">ID</label>
+          <select name="id_select" id="id_select">
+            <?php include '../utils/number_filter.php' ?>
+          </select>
+
+          <input type="text" id="id" name="id" value="<?= htmlspecialchars($_GET['id'] ?? '') ?>" />
+
         </li>
 
-        <li><label for="credits">From Date</label>
-          <input type="datetime-local" id="credits" />
-        </li>
+        <li>
+          <label for="name">Name</label>
+          <select name="name_select" id="name_select">
+            <?php include '../utils/string_filter.php' ?>
+          </select>
 
-        <li><label for="credits">To Date</label>
-          <input type="datetime-local" id="credits" />
-        </li>
+          <input type="text" id="name" name="name" value="<?= htmlspecialchars($_GET['name'] ?? '') ?>" />
 
-      </ul>
-      <input type="submit" value="Submit" />
+        </li>
+        <!-- 
+        <li>
+          <label for="credits">Credits</label>
+          <select name="credits_select" id="credits_select">
+            <?php include '../utils/number_filter.php' ?>
+          </select>
+          <input type="number" name="credits" id="credits" value="<?= htmlspecialchars($_GET['credits'] ?? '') ?>" />
+        </li>
+      </ul> -->
+        <input type="submit" value="Submit" />
 
     </form>
   </section>
 
+  <?php if ($events): ?>
 
-  <section class="jumbotron" id="edit">
-    <h3>TASKS</h3>
-    <ul>
-      <li><a href="">Details</a></label>
-      <li><a href="">View Posts</a></li>
-      <li><a href="">Participants</a></li>
-      <li><a href="">Registration Form</a></li>
+    <form action="" method="POST" class="jumbotron" id="edit">
+      <h3>MASS EDIT</h3>
 
+      <ul>
+        <li>
 
-    </ul>
-  </section>
+          <select name="mass_edit_select" id="mass_edit_select">
+            <option value="add">Add Credits by</option>
+            <option value="set">Set Credits to</option>
+          </select>
 
-  <table id="credits_sheet">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Start Date</th>
-        <th>End Date</th>
-        <th>Registered</th>
-      </tr>
-    </thead>
+          <input type="number" name="credits" required />
+        </li>
 
-    <tbody>
-      <tr>
-        <td>Lorem2</td>
-        <td>Lorem2</td>
-        <td>Lorem2</td>
-        <td>Lorem2</td>
-        <td>Lorem2</td>
-      </tr>
-      <tr>
-        <td>Lorem2</td>
-        <td>Lorem2</td>
-        <td>Lorem2</td>
-        <td>Lorem2</td>
-        <td>Lorem2</td>
-      </tr>
-      <tr>
-        <td>Lorem2</td>
-        <td>Lorem2</td>
-        <td>Lorem2</td>
-        <td>Lorem2</td>
-        <td>Lorem2</td>
-      </tr>
-    </tbody>
-  </table>
+      </ul>
+      <button type="button" id="select_all_btn">Select All</button>
+      <button type="button" id="deselect_all_btn">Deselect All</button>
 
+      <input type="submit" value="Edit" disabled />
+    </form>
+
+    <table id="credits_sheet" class="table_records">
+      <thead>
+        <tr>
+          <th></th>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Credits</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <?php foreach ($events as $user) : ?>
+          <tr>
+            <td><input type="checkbox" form="edit" name="u_<?= htmlspecialchars($user['id']) ?>"></td>
+            <td><?= htmlspecialchars(strtoupper($user['id'])) ?> </td>
+            <td><?= htmlspecialchars(ucwords($user['name'])) ?> </td>
+            <td><?= htmlspecialchars($user['credits']) ?></td>
+          </tr>
+        <?php endforeach ?>
+      </tbody>
+    </table>
+  <?php endif; ?>
 </div>
+
+<script src="../../scripts/TableRecords.js"></script>
+<script src="../../scripts/credits.js"></script>
 
 </html>

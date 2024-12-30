@@ -1,6 +1,6 @@
 <?php
 
-use Fahd\NSS\Users\UserList;
+use Fahd\NSS\Users\UserRecords;
 
 require_once '../../vendor/autoload.php';
 require_once "./access_restrict.php";
@@ -11,7 +11,7 @@ $post_names = ['mass_edit_select', 'credits'];
 $is_post_fields_present = array_reduce($post_names, fn($carry, $name) => $carry && isset($_POST[$name]), true);
 
 if ($is_post_fields_present) {
-  $userList = UserList::filterFields();
+  $userList = new UserRecords(UserRecords::filterFields());
 
   if ($userList->ids && in_array($_POST['mass_edit_select'], ["add", "set"])) {
     $res = call_user_func([&$userList, $_POST['mass_edit_select'] . 'Credits'], (int) $_POST['credits']);
@@ -22,7 +22,10 @@ $get_names = ['credits', 'id', 'id_select', 'credits_select'];
 $is_get_fields_present  = array_reduce($get_names, fn($carry, $name) => $carry && isset($_GET[$name]), true);
 
 if ($is_get_fields_present) {
-  $users = UserList::getUsers($_GET['id_select'], $_GET['id'], $_GET['credits_select'],  $_GET['credits'] == "" ? null: (int) $_GET['credits']);
+  $userList = new UserRecords;
+  $userList->colValue = ["id" => $_GET['id'], "credits" => $_GET['credits']];
+  $userList->colSelect = ["id" => $_GET['id_select'], "credits" => $_GET['credits_select']];
+  $users = $userList->getRecords();
   $number_filter_selected = $_GET['credits_select'];
   $string_filter_selected = $_GET['id_select'];
 }
@@ -68,7 +71,7 @@ if ($is_get_fields_present) {
     <nav>
       <a href="./">Dashboard</a>
       <a href="./credits.php" class="active">Credits</a>
-      <a href="./events/edit.php">Events</a>
+      <a href="./events/">Events</a>
       <a href="../logout.php">Logout</a>
     </nav>
   </header>
@@ -130,7 +133,7 @@ if ($is_get_fields_present) {
       <input type="submit" value="Edit" disabled/>
     </form>
 
-    <table id="credits_sheet">
+    <table id="credits_sheet" class="table_records">
       <thead>
         <tr>
           <th></th>

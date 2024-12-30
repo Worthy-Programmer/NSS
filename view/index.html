@@ -42,14 +42,14 @@
 
   <!-- Slider -->
   <section id="slider">
-    <div class="carousel">
+    <div class="carousel" id="carousel_homepage">
       <div class="carousel-items">
         <div class="carousel-item"><img src="./static/slider2.jpg" alt=""></div>
         <div class="carousel-item"><img src="./static/slider1.jpg" alt=""></div>
         <div class="carousel-item"><img src="./static/slider3.jpg" alt=""></div>
       </div>
-      <button class="carousel-control prev" onclick="movePrev()">❮</button>
-      <button class="carousel-control next" onclick="moveNext()">❯</button>
+      <button class="carousel-control prev">❮</button>
+      <button class="carousel-control next">❯</button>
     </div>
 
   </section>
@@ -126,7 +126,8 @@
 
   <!-- Scripts -->
   <script src="./scripts/header.js"></script>
-  <script src="./scripts/slider.js"></script>
+  <script src="./scripts/Carousel.js"></script>
+  <script>new Carousel("carousel_homepage")</script>
 
 </body>
 

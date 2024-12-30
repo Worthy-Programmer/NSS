@@ -1,0 +1,29 @@
+.table_records {
+  grid-column: span 2;
+
+  border-collapse: collapse;
+  border: 1px solid;
+
+
+  th,
+  td {
+    padding: 10px;
+    /* border: 1px solid; */
+    text-align: center;
+    /* background-color: var(--gray); */
+  }
+
+  th {
+    background-color: var(--primary-color);
+    color: white;
+
+  }
+
+  tr:has(input:checked) {
+    background-color: rgba(39, 50, 127, 0.1);
+  }
+
+  td:first-child {
+    width: 10px;
+  }
+}

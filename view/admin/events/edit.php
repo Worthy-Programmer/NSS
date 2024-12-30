@@ -2,7 +2,7 @@
 require_once '../../../vendor/autoload.php';
 require_once "./../access_restrict.php";
 
-use Fahd\NSS\Event;
+use Fahd\NSS\Events\Event;
 
 $event = new Event(0);
 
@@ -12,7 +12,6 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
   $event->getData();
   $event->getUsers();
 
-  // var_dump($event->users[]);
 }
 ?>
 

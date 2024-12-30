@@ -1,0 +1,25 @@
+.jumbotron {
+  background-color: var(--gray);
+  padding: 20px;
+
+  border-radius: 10px;
+
+
+  li {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 3px;
+    align-items: first baseline;
+    /* justify-content: space-between; */
+  }
+
+  input[type=submit] {
+    margin-top: 20px;
+  }
+}
+
+@media screen and (width < 100px) {
+  .jumbotron {
+    grid-column: span 2;
+  }
+}
