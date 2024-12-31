@@ -1,6 +1,8 @@
-const pfpForm = document.getElementById("pfp_form");
+// @ts-ignore
+const form = document.getElementById("pfp_form");
 const input = form.pfpToUpload;
-const pfpStatusPara = document.getElementById("pfp_status");
+// @ts-ignore
+const statusPara = document.getElementById("pfp_status");
 const img = document.getElementById("pfp");
 const approvedType = ["image/jpeg", "image/png"];
 

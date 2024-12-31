@@ -1,4 +1,5 @@
 .table_records {
+  /* text-align: center; */
   grid-column: span 2;
 
   border-collapse: collapse;

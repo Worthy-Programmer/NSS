@@ -148,7 +148,10 @@ if ($is_get_fields_present) {
           <th></th>
           <th>ID</th>
           <th>Name</th>
+          <th>Start Date Time</th>
+          <th>End Date Time</th>
           <th>Credits</th>
+
         </tr>
       </thead>
 
@@ -156,8 +159,10 @@ if ($is_get_fields_present) {
         <?php foreach ($events as $user) : ?>
           <tr>
             <td><input type="checkbox" form="edit" name="u_<?= htmlspecialchars($user['id']) ?>"></td>
-            <td><?= htmlspecialchars(strtoupper($user['id'])) ?> </td>
-            <td><?= htmlspecialchars(ucwords($user['name'])) ?> </td>
+            <td><?= htmlspecialchars(strtoupper($user['id'])) ?></td>
+            <td><a href="./view.php?id=<?= htmlspecialchars($user['id']) ?>"><?= htmlspecialchars(ucwords($user['name'])) ?></a></td>
+            <td><?= htmlspecialchars($user['start_datetime']) ?></td>
+            <td><?= htmlspecialchars($user['end_datetime']) ?></td>
             <td><?= htmlspecialchars($user['credits']) ?></td>
           </tr>
         <?php endforeach ?>

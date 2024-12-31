@@ -17,11 +17,11 @@ class EventRecords extends TableRecords
 
   public function addCredits(int $increment): bool
   {
-    return DB::query("UPDATE user SET credits = credits + %d WHERE id IN " . self::commaSeparatedStringsForIN(count($this->ids)), $increment, ...$this->ids);
+    return DB::query("UPDATE $this->table_name SET credits = credits + %d WHERE id IN " . self::commaSeparatedStringsForIN(count($this->ids)), $increment, ...$this->ids);
   }
 
   public function setCredits(int $credits): bool
   {
-    return DB::query("UPDATE user SET credits = %d WHERE id IN " . self::commaSeparatedStringsForIN(count($this->ids)), $credits, ...$this->ids);
+    return DB::query("UPDATE $this->table_name SET credits = %d WHERE id IN " . self::commaSeparatedStringsForIN(count($this->ids)), $credits, ...$this->ids);
   }
 }
