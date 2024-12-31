@@ -7,6 +7,7 @@ use DateTime;
 
 class Event
 {
+  private string $table_name = "event";
   public string $name;
   public \DateTime $startDatetime;
   public \DateTime $endDatetime;
@@ -23,18 +24,12 @@ class Event
 
   public function __construct(public int $id) {}
 
-  public function getData(): bool
+  public function get(): bool
   {
-    $db = new DB();
-    $db->connect();
-
-    $query = sprintf("SELECT * FROM event WHERE id=%d LIMIT 1", $this->id);
-    $res = $db->conn->query($query);
-
+    $res = DB::query("SELECT * FROM $this->table_name WHERE id=%d LIMIT 1", $this->id);
     $row = $res->fetch_assoc();
 
     if ($res->num_rows === 0) return false;
-
 
     $this->name = $row['name'];
     $this->startDatetime = new DateTime($row['start_datetime']);
@@ -46,6 +41,25 @@ class Event
 
     $this->formatDate();
     return true;
+  }
+
+  public function update(): void
+  {
+    DB::query("UPDATE `$this->table_name` SET `name` = '%s', `start_datetime` = '%s', `end_datetime` = '%s', `venue` = '%s', `credits` = %d, `max_vol` = %d,  `content` = '%s' WHERE `id` = %d", $this->name, $this->startDatetimeString, $this->endDatetimeString, $this->venue, $this->credits, $this->max_vol, $this->content, $this->id);
+  }
+
+  public function insert (): void
+  {
+    DB::query("INSERT INTO `$this->table_name` (`name`, `start_datetime`, `end_datetime`, `venue`, `credits`, `max_vol`, `content`) VALUES ('%s', '%s', '%s', '%s', %d, %d, '%s')", $this->name, $this->startDatetimeString, $this->endDatetimeString, $this->venue, $this->credits, $this->max_vol, $this->content);
+    $this->getIDFromDetails();
+  }
+
+  private function getIDFromDetails():int
+  {
+    $res = DB::query("SELECT id FROM `$this->table_name` WHERE `name` = '%s' AND `start_datetime` = '%s' AND `end_datetime` = '%s' AND `venue` = '%s' AND `credits` = %d AND `max_vol` = %d AND `content` = '%s' LIMIT 1", $this->name, $this->startDatetimeString, $this->endDatetimeString, $this->venue, $this->credits, $this->max_vol, $this->content);
+    $row = $res->fetch_assoc();
+    $this->id = (int) $row['id'];
+    return $this->id;
   }
 
   public function getUsers(): void{

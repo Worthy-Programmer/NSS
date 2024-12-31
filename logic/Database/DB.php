@@ -37,10 +37,10 @@ class DB {
 
   public function escape(string $str): string {
     // Removed get_magic_quotes_gpc check as it is deprecated
-    return htmlentities($this->conn->real_escape_string($str));
+    return $this->conn->real_escape_string($str);
   }
 
-  public function escapeArray(array $str_list): array {
+  private function escapeArray(array $str_list): array {
     return array_map(fn($x) => $this->escape($x), $str_list);
   }
 
@@ -49,12 +49,52 @@ class DB {
     $db->connect();
 
     $values = $db->escapeArray($values);
-    $query = sprintf($format, ...$values);
+    // $query = sprintf($format, ...$values);
+
+    [$placeholders, $types] = self::convertFormatStringToPreparedStatement($format, $values);
+
+    // echo $placeholders;
+    // echo $types;
+    // var_dump($values);
+
+    $stmt = $db->conn->prepare($placeholders);
+    
+    if($types !== '') 
+      $stmt->bind_param($types, ...$values);
+    $stmt->execute();
+
     // echo $query;
-    $res = $db->conn->query($query);
+    $res = $stmt->get_result();
     
     return $res;
     
+  }
+
+  private static function convertFormatStringToPreparedStatement(string $format, array $values): array {
+    $types = '';
+    $placeholders = preg_replace_callback('/("%[sidb]"|\'%[sidb]\'|%[sidb])/', function ($matches) use (&$types) {
+      switch ($matches[1]) {
+        case '%i':
+          $types .= 'i';
+          break;
+        case '%d':
+          $types .= 'd';
+          break;
+        case '%s':
+        case "'%s'":
+        case '"%s"':
+          $types .= 's';
+          break;
+        case '%b':
+          $types .= 'b';
+          break;
+        default:
+          throw new \Exception("Unsupported format type: " . $matches[1]);
+      }
+      return '?';
+    }, $format);
+
+    return [$placeholders, $types];
   }
 
   public function createDatabase(string $sqlFile) {
