@@ -10,12 +10,16 @@ use UI\TableRecords;
 
 $event = new Event(0);
 
+$is_event_create = true;
+
 $post_names = ['id', 'name', 'from_date', 'to_date', 'venue', 'credits', 'max_vol', 'content'];
 $is_post_fields_present = Helper::isAllKeysInArray($post_names, $_POST);
 
 
 // PUT EVENT
 if ($is_post_fields_present) {
+  $is_event_create = false;
+
   $event->id = $_POST['id'];
   $event->name = $_POST['name'];
   $event->startDatetimeString = $_POST['from_date'];
@@ -37,9 +41,18 @@ if ($is_post_fields_present) {
 } else if (isset($_GET['id']) && is_numeric($_GET['id'])) {
   // GET EVENT
   $event = new Event($_GET['id']);
+
+  if (isset($_POST['add_user'])) {
+    $user_ids = explode(',', $_POST['add_user']);
+    $event->addUsers($user_ids);
+  }
+
   $event->read();
   $event->getUsers();
+  $is_event_create = false;
 }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -58,7 +71,7 @@ if ($is_post_fields_present) {
 
 
 
-  <form method="POST" action="" id="wrapper">
+  <form method="POST" action="<?= $event->id ? '?id=' . $event->id : '' ?>" id="wrapper">
     <section class="jumbotron">
       <h3>DETAILS</h3>
 
@@ -112,27 +125,30 @@ if ($is_post_fields_present) {
   </form>
 
 
-  <form action="" id="user" class="wrapper">
-    <input type="hidden" name="event_id" value="<?= $event->id ?>">
-    <div class="jumbotron">
-      <h3>JOINED VOLUNTEERS</h3>
-      <div id="edit_tools">
+  <?php if (!$is_event_create): ?>
+    <form action="?id=<?= $event->id ?>" id="user" class="wrapper" method="POST">
 
-        <div>
-          <input type="text" id="add_input" placeholder="Enrol Volunteers" name="add_user">
-          <button type="submit">Enrol</button>
+      <input type="hidden" name="event_id" value="<?= $event->id ?>">
+      <div class="jumbotron">
+        <h3>JOINED VOLUNTEERS</h3>
+        <div id="edit_tools">
+
+          <div>
+            <input type="text" id="add_input" placeholder="Enrol Volunteers" name="add_user" required>
+            <button type="submit">Enrol</button>
+          </div>
         </div>
+
+        <button type="button" class="delete_btn" disabled>Remove Volunteers</button>
+        <button type="button" id="mark_attendance" disabled> <i class="fas fa-check"></i> Attend</button>
+
+        <button type="button" id="unmark_attendance" class="delete_btn" disabled> <i class="fas fa-times"></i> Attend</button>
+
+        <!-- <button type="button" id=/></button> -->
       </div>
 
-      <button type="button" class="delete_btn" disabled>Remove Volunteers</button>
-      <button type="button" disabled>Mark Attendance</button>
-
-      <!-- <button type="button" id=/></button> -->
-    </div>
-    <?php if ($event->userCount ?? false) : ?>
-
       <?php
-      (new TableRecords(
+      if ($event->userCount ?? false) (new TableRecords(
         'enrolled_users',
         ['', 'ID', 'Name', 'Attendance'],
         $event->users,
@@ -145,19 +161,10 @@ if ($is_post_fields_present) {
       ))->render();
 
       ?>
-    <?php endif; ?>
 
-  </form>
-
-  <script type="module">
-    import TableRecords from "/view/scripts/TableRecords.js"
-    const tableRecord = new TableRecords('enrolled_users');
-    tableRecord.deleteLink = 'user_event/delete_user.php'
-    tableRecord.setupEvents({
-      deleteBtn: document.getElementsByClassName('delete_btn')[0]
-    })
-  </script>
-
+    </form>
+  <?php endif ?>
+  <script type="module" src="./view.js"></script>
 
 </body>
 

@@ -42,21 +42,36 @@ export default class TableRecords {
   }
 
   async deleteRecords() {
+    if (!confirm("Are you sure ? If deleted, previous data cannot be retrieved")) return
+
+    this.sendSelectedRecordAndChangeUI(
+      `/api/${this.deleteLink}`,
+      this.#deleteRecordsUI,
+      { record: this.tableID }
+    )
+  }
+
+  async sendSelectedRecordAndChangeUI(link, UIChangerFunc, extraFields = {}, method = "POST") {
+    if (!this.isAnythingChecked) return
     const form = new FormData(this.#checkedRecords[0].form)
     form.append('record', this.tableID)
 
-    const res = await fetch(`/api/${this.deleteLink}`, {
-      method: 'POST',
+    for (const name in extraFields) form.append(name, extraFields[name])
+
+    const res = await fetch(link, {
+      method,
       body: form,
     })
 
     const data = await res.json()
 
-    if (res.ok && data.status == 1) this.#deleteRecordsUI()
+    if (res.ok && data.status == 1) UIChangerFunc(this.#checkedRecords);
   }
 
-  #deleteRecordsUI() {
-    this.#checkedRecords.forEach(checkbox => {
+
+
+  #deleteRecordsUI(checkedRecords = null) {
+    (checkedRecords ?? this.#checkedRecords).forEach(checkbox => {
       const trEl = checkbox.parentElement.parentElement
       trEl.remove()
     })
@@ -95,12 +110,12 @@ export default class TableRecords {
     if (eventTargets.deleteBtn)
       eventTargets.deleteBtn.addEventListener('click', e => this.deleteRecords()) // delete button 
 
-    this.table.addEventListener('change', e => {
-      if(eventTargets.submitBtn)
-      eventTargets.submitBtn.disabled = !this.isAnythingChecked
+    this.table.addEventListener('change', _e => {
 
-      if(eventTargets.deleteBtn)
-      eventTargets.deleteBtn.disabled = !this.isAnythingChecked
+      const isDisabled = !this.isAnythingChecked
+      eventTargets.disableIfNotChecked.forEach(element =>
+        element.disabled = isDisabled
+      );
     })
   }
 }

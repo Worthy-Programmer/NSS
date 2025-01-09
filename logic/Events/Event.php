@@ -83,10 +83,28 @@ class Event implements CRUD
     DB::query("DELETE FROM user_event WHERE user_id IN ". TableRecords::commaSeparatedStringsForIN(count($ids)). " AND event_id = %d", ...array_merge($ids, [$this->id]));
   }
 
-  public function addUsers(array $ids) {
-    $values = array_reduce($ids, fn($array, $id) => array_merge($array, [$id, $this->id]), []);
-    DB::query("INSERT INTO user_event (user_id, event_id) VALUES ". TableRecords::commaSeparatedValuesForIN("('%s', %d)", count($ids)) , ...$values);
+  public function markAtttendance(array $ids)
+  {
+    DB::query("UPDATE user_event SET attendance = TRUE WHERE user_id IN " . TableRecords::commaSeparatedStringsForIN(count($ids)) . " AND event_id = %d", ...array_merge($ids, [$this->id]));
   }
+
+  public function unmarkAtttendance(array $ids)
+  {
+    DB::query("UPDATE user_event SET attendance = FALSE WHERE user_id IN " . TableRecords::commaSeparatedStringsForIN(count($ids)) . " AND event_id = %d", ...array_merge($ids, [$this->id]));
+  }
+
+
+
+  public function addUsers(array $ids) {
+    $values = array_reduce($ids, fn($array, $id) => array_merge($array, [strtolower($id), $this->id]), []);
+
+    // ( ('%s', %d), ('%s', %d) , ('%s', %d) ) -> IT WILL BE LIKE THIS. BUT WE DON'T NEED THE OUTER ()
+    $comma_separated  = TableRecords::commaSeparatedValuesForIN("('%s', %d)", count($ids));
+    $comma_separated = substr($comma_separated, 1,  strlen($comma_separated) - 2);
+    $query = "INSERT INTO user_event (user_id, event_id) VALUES " .  $comma_separated;
+    DB::query($query , ...$values);
+  }
+
 
   public function formatDate() {
     $this->startDatetimeString = $this->startDatetime->format('Y-m-d\TH:i');
