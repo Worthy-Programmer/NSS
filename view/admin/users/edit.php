@@ -4,20 +4,21 @@ use NSS\Utils\Helper;
 
 require_once '../../../vendor/autoload.php';
 
-$is_create_user = false;
+$is_create_user = true;
 
 if (isset($_GET['id'])) {
   $user = new NSS\Users\User($_GET['id']);
   $user->read();
+
+  $is_create_user  = false;
 }
 
-$post_array = ['id', 'name', 'credits', 'role', 'mode'];
+$post_array = ['name', 'credits', 'role', 'mode'];
 $is_post_fields_present = Helper::isAllKeysInArray($post_array, $_POST);
 
-if (isset($_GET['mode']) && $_GET['mode'] == 'create') $is_create_user = true;
+// if (isset($_GET['mode']) && $_GET['mode'] == 'create') $is_create_user = true;
 
 if ($is_post_fields_present) {
-  $is_create_user = $_POST['mode'] == 'create';
   $user = new NSS\Users\User($_POST['id']);
   $user->name = $_POST['name'];
   $user->credits = $_POST['credits'];
@@ -42,13 +43,13 @@ if ($is_post_fields_present) {
     "Users" => "/view/admin/users/",
     "Events" => "/view/admin/events/",
     "Logout" => "/view/auth/logout.php"
-  ], "Edit User"))->render(); ?>
+  ], "Users"))->render(); ?>
 
 
   <div id="wrapper">
     <section class="jumbotron">
       <h3>Edit User</h3>
-      <form action="" method="post">
+      <form action="<?php  if(!$is_create_user) echo '?id='.$user->id; ?>" method="post">
         <input type="hidden" name="mode" value="<?= $is_create_user ? 'create' : 'edit'; ?>">
 
 

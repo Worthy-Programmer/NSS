@@ -47,8 +47,8 @@ if (SessionHandler::isLoggedIn()) {
 
 
   <!-- Scripts -->
-  <script src="/view/scripts/header.js"></script>
-  <script src="/view/scripts/login.js"></script>
+  <script src="/view/scripts/components/header.js"></script>
+  <script src="/view/scripts/pages/login.js"></script>
 </body>
 
 </html>

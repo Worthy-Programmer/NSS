@@ -29,10 +29,10 @@ require_once "./access_restrict.php";
   <div id="wrapper">
 
     <section class="jumbotron">
-      <h3>Credits</h3>
+      <h3>Users</h3>
       <ul>
-        <li><a href="">Sheet</a></li>
-        <li><a href="">Edit Credits</a></li>
+        <li><a href="/view/admin/users/">Select / View</a></li>
+        <li><a href="/view/admin/users/edit.php">Create</a></li>
       </ul>
     </section>
 
@@ -40,9 +40,8 @@ require_once "./access_restrict.php";
     <section class="jumbotron">
       <h3>Events</h3>
       <ul>
-        <li><a href="">Add Event</a></li>
-        <li><a href="">Event List</a></li>
-        <li><a href="">Blog post</a></li>
+        <li><a href="/view/admin/events/">Select / View</a></li>
+        <li><a href="/view/admin/events/view.php">Create</a></li>
       </ul>
     </section>
     <!-- 

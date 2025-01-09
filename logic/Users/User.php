@@ -31,7 +31,7 @@ class User implements CRUD {
   }
 
   public function create() {
-    return DB::query("INSERT INTO user VALUES ('%s', '%s', %d, %d)", $this->id, $this->name, $this->credits, $this->role);
+    return DB::query("INSERT INTO user VALUES ('%s', '%s', %d, %d)", strtolower($this->id), $this->name, $this->credits, $this->role);
   }
 
   public function getEvents() {
@@ -70,7 +70,7 @@ class User implements CRUD {
   static function getAdminFromSession() {
     $user = self::getUserFromSession();
     $user->read();
-    if(!$user->isVolunteer()) throw new Exception\Forbidden;
+    if($user->isVolunteer()) throw new Exception\Forbidden;
     return $user;
   }
 }

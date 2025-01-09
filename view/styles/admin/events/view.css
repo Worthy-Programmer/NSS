@@ -8,10 +8,6 @@ textarea {
 
 form#user {
   margin-top: 50px;
-
-  >div {
-    /* grid-column: span 2; */
-  }
 }
 
 #edit_tools>div {
@@ -32,4 +28,8 @@ td:has(.fa-times) {
 
 td:has(.fa-check) {
   color: green;
+}
+
+button .fas {
+  margin-right: 10px;
 }

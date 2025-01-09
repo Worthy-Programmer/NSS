@@ -134,7 +134,7 @@ if ($is_get_fields_present) {
     ))->render(); ?>
   </div>
 
-  <script type="module" src="/view/scripts/records.js"></script>
+  <script type="module" src="/view/scripts/pages/records.js"></script>
 
 </body>
 
