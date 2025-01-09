@@ -1,10 +1,10 @@
 <?php
 
-namespace Fahd\NSS\Users;
+namespace NSS\Users;
 
-use Fahd\NSS\Database\DB;
-use Fahd\NSS\Utils\Response;
-use Fahd\NSS\Utils\Status;
+use NSS\Database\DB;
+use NSS\Utils\Response;
+use NSS\Utils\Status;
 
 class PFP
 {

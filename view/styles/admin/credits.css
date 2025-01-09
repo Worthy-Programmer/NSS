@@ -1,4 +1,0 @@
-@import url('./utils/jumbotron.css');
-@import url('./utils/table_records.css');
-
-#select li { grid-template-columns: 1fr 2fr 2fr; }

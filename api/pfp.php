@@ -1,8 +1,8 @@
 <?php
 
-use Fahd\NSS\Users\PFP;
-use Fahd\NSS\Auth\SessionHandler;
-use Fahd\NSS\Utils\Status;
+use NSS\Users\PFP;
+use NSS\Auth\SessionHandler;
+use NSS\Utils\Status;
 
 require '../vendor/autoload.php';
 

@@ -1,25 +1,20 @@
 <?php
 
-namespace Fahd\NSS\Users;
+namespace NSS\Users;
 
-use Fahd\NSS\Database\DB;
-use Fahd\NSS\TableRecords;
+use NSS\Database\DB;
+use NSS\TableRecords;
 
 class UserRecords extends TableRecords
 {
 
-  public string  $table_name = "user";
+  protected string $table = "user";
   public array $colType = ["id" => "string", "credits" => "int"];
 
-  public function __construct(public array $ids = []) {}
-
-  public function addCredits(int $increment): bool
+  public function linkEvents($event_id): void
   {
-    return DB::query("UPDATE user SET credits = credits + %d WHERE id IN " . self::commaSeparatedStringsForIN(count($this->ids)), $increment, ...$this->ids);
-  }
-
-  public function setCredits(int $credits): bool
-  {
-    return DB::query("UPDATE user SET credits = %d WHERE id IN " . self::commaSeparatedStringsForIN(count($this->ids)), $credits, ...$this->ids);
+    foreach ($this->ids as $user_id) {
+      DB::query("INSERT INTO event_user (event_id, user_id) VALUES (%d, %d)", $event_id, $user_id);
+    }
   }
 }

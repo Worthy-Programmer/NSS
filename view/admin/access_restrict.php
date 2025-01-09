@@ -1,12 +1,12 @@
 <?php
-use Fahd\NSS\Auth\SessionHandler;
-use Fahd\NSS\Users\User;
+use NSS\Auth\SessionHandler;
+use NSS\Users\User;
 
 if (!SessionHandler::isLoggedIn()) header("Location: ../login.php");
 
 $session = new SessionHandler();
 $user = new User($session->username);
-$user->getDetails();
+$user->read();
 
 
 if($user->isVolunteer()) {

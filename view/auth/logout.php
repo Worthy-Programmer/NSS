@@ -1,8 +1,8 @@
 <?php
 
-use Fahd\NSS\Auth\CookieHandler;
+use NSS\Auth\CookieHandler;
 
-require '../vendor/autoload.php';
+require '../../vendor/autoload.php';
 
 $cookie = new CookieHandler();
 $cookie->destroy();

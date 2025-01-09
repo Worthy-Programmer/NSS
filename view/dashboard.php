@@ -1,55 +1,46 @@
 <?php
 
-use Fahd\NSS\Auth\SessionHandler;
-use Fahd\NSS\Users\User;
+use NSS\Auth\SessionHandler;
+use NSS\Users\User;
+use UI\Head;
+use UI\Navbar;
 
 require '../vendor/autoload.php';
-if (!SessionHandler::isLoggedIn()) header("Location: ./login.php");
+if (!SessionHandler::isLoggedIn()) header("Location: ./auth/login.php");
+
+$admin_view = false;
 
 $session = new SessionHandler();
 $user = new User($session->username);
-$user->getDetails();
+$user->read();
+
+if(!$user->isVolunteer() & isset($_GET['id'])) {
+  $user = new User($_GET['id']);
+  $user->read(); 
+  $admin_view = true;
+}
+
+$nav_items = [
+  "Home" => "/",
+  "Dashboard" => "/view/dashboard.php",
+  "Logout" => "/view/auth/logout.php"
+];
+
+if (!$user->isVolunteer()) $nav_items["Admin"] = "/view/admin/";
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="static/logo.png" />
-
-
-  <!-- CSS Styles -->
-  <link rel="stylesheet" href="styles/init.css" />
-  <link rel="stylesheet" href="styles/dashboard.css" />
-
-  <!-- Font Awesome -->
-  <script
-    src="https://kit.fontawesome.com/6db7b46a37.js"
-    crossorigin="anonymous"></script>
-
-  <title>NSS IITM</title>
-</head>
+<?php (new Head($user->name, ['init.css', 'dashboard.css']))->render(); ?>
 
 <body>
 
 
   <!-- Header -->
-  <header>
-    <div id="logo">
-      <img src="./static/logo.png" alt="NSS Logo" />
-      <h2>IIT MADRAS</h2>
-    </div>
-    <i id="hamburger" class="fas fa-bars"></i>
-    <nav>
-      <a href="./">Home</a><a href="./login.php" class="active">Dashboard</a>
-      <a href="./logout.php">Logout</a>
-    </nav>
-  </header>
-
+   <?php  (new Navbar($nav_items, "Dashboard"))->render(); 
+   ?>
 
   <section id="profile">
 

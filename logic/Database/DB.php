@@ -1,5 +1,5 @@
 <?php
-namespace Fahd\NSS\Database;
+namespace NSS\Database;
 
 class DB {
   static private string $host;
@@ -49,9 +49,8 @@ class DB {
     $db->connect();
 
     $values = $db->escapeArray($values);
-    // $query = sprintf($format, ...$values);
 
-    [$placeholders, $types] = self::convertFormatStringToPreparedStatement($format, $values);
+    [$placeholders, $types] = self::convertFormatStringToPreparedStatement($format);
 
     // echo $placeholders;
     // echo $types;
@@ -70,7 +69,7 @@ class DB {
     
   }
 
-  private static function convertFormatStringToPreparedStatement(string $format, array $values): array {
+  private static function convertFormatStringToPreparedStatement(string $format): array {
     $types = '';
     $placeholders = preg_replace_callback('/("%[sidb]"|\'%[sidb]\'|%[sidb])/', function ($matches) use (&$types) {
       switch ($matches[1]) {

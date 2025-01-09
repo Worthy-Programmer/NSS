@@ -2,12 +2,16 @@
 require_once '../../../vendor/autoload.php';
 require_once "./../access_restrict.php";
 
-use Fahd\NSS\Events\Event;
+use NSS\Events\Event;
+use NSS\Utils\Helper;
+use UI\Head;
+use UI\Navbar;
+use UI\TableRecords;
 
 $event = new Event(0);
 
 $post_names = ['id', 'name', 'from_date', 'to_date', 'venue', 'credits', 'max_vol', 'content'];
-$is_post_fields_present = array_reduce($post_names, fn($carry, $name) => $carry && isset($_POST[$name]), true);
+$is_post_fields_present = Helper::isAllKeysInArray($post_names, $_POST);
 
 
 // PUT EVENT
@@ -26,14 +30,14 @@ if ($is_post_fields_present) {
   if ($event->id > 0)
     $event->update();
   else
-    $event->insert();
+    $event->create();
 
 
   $event->getUsers();
 } else if (isset($_GET['id']) && is_numeric($_GET['id'])) {
   // GET EVENT
   $event = new Event($_GET['id']);
-  $event->get();
+  $event->read();
   $event->getUsers();
 }
 ?>
@@ -41,45 +45,18 @@ if ($is_post_fields_present) {
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="../../static/logo.png" />
-
-  <!-- CSS Styles -->
-  <link rel="stylesheet" href="../../styles/init.css" />
-  <link rel="stylesheet" href="../../styles/admin/index.css" />
-  <link rel="stylesheet" href="../../styles/admin/utils/jumbotron.css" />
-  <link rel="stylesheet" href="../../styles/admin/utils/table_records.css" />
-
-  <link rel="stylesheet" href="../../styles/admin/events/view.css" />
-
-  <!-- Font Awesome -->
-  <script
-    src="https://kit.fontawesome.com/6db7b46a37.js"
-    crossorigin="anonymous"></script>
-
-  <title>Events | NSS IITM Admin Portal </title>
-</head>
+<?php (new Head("Event View | Admin", ['init.css', 'admin/index.css', 'utils/jumbotron.css', 'utils/table_records.css', 'admin/events/view.css']))->render() ?>
 
 <body>
 
-  <!-- Header -->
-  <header>
-    <div id="logo">
-      <img src="../../static/logo.png" alt="NSS Logo" />
-      <h2>IIT MADRAS</h2>
-    </div>
-    <i id="hamburger" class="fas fa-bars"></i>
-    <nav>
-      <a href="./">Dashboard</a>
-      <a href="../credits.php">Credits</a>
-      <a href="./" class="active">Events</a>
-      <a href="../../logout.php">Logout</a>
-    </nav>
-  </header>
+  <?php (new Navbar([
+    "Dashboard" => "/view/admin/",
+    "Users" => "/view/admin/users/",
+    "Events" => "/view/admin/events/",
+    "Logout" => "/view/auth/logout.php"
+  ], "Events"))->render(); ?>
+
+
 
   <form method="POST" action="" id="wrapper">
     <section class="jumbotron">
@@ -131,31 +108,56 @@ if ($is_post_fields_present) {
       <input type="submit" value="Save">
     </section>
 
-    <?php if ($event->userCount ?? false): ?>
-      <table class="table_records">
-        <thead>
-          <tr>
-            <th></th>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Credits</th>
-          </tr>
-        </thead>
 
-        <tbody>
-          <?php foreach ($event->users as $user): ?>
-            <tr>
-              <td><input type="checkbox" name="" id=""></td>
-              <td><?= $user[0] ?></td>
-              <td style="text-transform:capitalize"><?= $user[1] ?></td>
-              <td><?= $user[2] ?></td>
-            </tr>
-          <?php endforeach; ?>
-        </tbody>
-      </table>
-
-    <?php endif; ?>
   </form>
+
+
+  <form action="" id="user" class="wrapper">
+    <input type="hidden" name="event_id" value="<?= $event->id ?>">
+    <div class="jumbotron">
+      <h3>JOINED VOLUNTEERS</h3>
+      <div id="edit_tools">
+
+        <div>
+          <input type="text" id="add_input" placeholder="Enrol Volunteers" name="add_user">
+          <button type="submit">Enrol</button>
+        </div>
+      </div>
+
+      <button type="button" class="delete_btn" disabled>Remove Volunteers</button>
+      <button type="button" disabled>Mark Attendance</button>
+
+      <!-- <button type="button" id=/></button> -->
+    </div>
+    <?php if ($event->userCount ?? false) : ?>
+
+      <?php
+      (new TableRecords(
+        'enrolled_users',
+        ['', 'ID', 'Name', 'Attendance'],
+        $event->users,
+        fn($user) => [
+          [TableRecords::CHECKBOX, ['u_' . $user[0], 'u_' . $user[0]]],
+          strtoupper($user[0]),
+          ucwords($user[1]),
+          ["<i class='fas fa-%s' > </i>",  [$user[2] ? 'check' : 'times']]
+        ]
+      ))->render();
+
+      ?>
+    <?php endif; ?>
+
+  </form>
+
+  <script type="module">
+    import TableRecords from "/view/scripts/TableRecords.js"
+    const tableRecord = new TableRecords('enrolled_users');
+    tableRecord.deleteLink = 'user_event/delete_user.php'
+    tableRecord.setupEvents({
+      deleteBtn: document.getElementsByClassName('delete_btn')[0]
+    })
+  </script>
+
 
 </body>
 

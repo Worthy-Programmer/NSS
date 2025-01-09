@@ -1,6 +1,6 @@
 <?php
 
-namespace Fahd\NSS\Utils;
+namespace NSS\Utils;
 
 enum Status: int {
   case OK = 1;

@@ -1,11 +1,13 @@
 <?php
 
-namespace Fahd\NSS\Events;
+namespace NSS\Events;
 
-use Fahd\NSS\Database\DB;
+use NSS\Database\DB;
 use DateTime;
+use NSS\CRUD;
+use NSS\TableRecords;
 
-class Event
+class Event implements CRUD
 {
   private string $table_name = "event";
   public string $name;
@@ -24,7 +26,7 @@ class Event
 
   public function __construct(public int $id) {}
 
-  public function get(): bool
+  public function read(): bool
   {
     $res = DB::query("SELECT * FROM $this->table_name WHERE id=%d LIMIT 1", $this->id);
     $row = $res->fetch_assoc();
@@ -48,10 +50,14 @@ class Event
     DB::query("UPDATE `$this->table_name` SET `name` = '%s', `start_datetime` = '%s', `end_datetime` = '%s', `venue` = '%s', `credits` = %d, `max_vol` = %d,  `content` = '%s' WHERE `id` = %d", $this->name, $this->startDatetimeString, $this->endDatetimeString, $this->venue, $this->credits, $this->max_vol, $this->content, $this->id);
   }
 
-  public function insert (): void
+  public function create (): void
   {
     DB::query("INSERT INTO `$this->table_name` (`name`, `start_datetime`, `end_datetime`, `venue`, `credits`, `max_vol`, `content`) VALUES ('%s', '%s', '%s', '%s', %d, %d, '%s')", $this->name, $this->startDatetimeString, $this->endDatetimeString, $this->venue, $this->credits, $this->max_vol, $this->content);
     $this->getIDFromDetails();
+  }
+
+  public function delete() {
+    DB::query("DELETE FROM `$this->table_name` WHERE `id`=%d", $this->id);
   }
 
   private function getIDFromDetails():int
@@ -66,29 +72,24 @@ class Event
     $db = new DB();
     $db->connect();
 
-    $query = sprintf("SELECT user.id, user.name, user.credits FROM user JOIN user_event ON user.id = user_event.user_id JOIN event ON event.id = user_event.event_id WHERE event.id = %d", $this->id);
+    $query = sprintf("SELECT user.id, user.name, user_event.attendance FROM user JOIN user_event ON user.id = user_event.user_id WHERE user_event.event_id = %d", $this->id);
     $res = $db->conn->query($query);
 
     $this->users = $res->fetch_all();
     $this->userCount = $res->num_rows;
   }
 
+  public function removeUsers(array $ids) {
+    DB::query("DELETE FROM user_event WHERE user_id IN ". TableRecords::commaSeparatedStringsForIN(count($ids)). " AND event_id = %d", ...array_merge($ids, [$this->id]));
+  }
+
+  public function addUsers(array $ids) {
+    $values = array_reduce($ids, fn($array, $id) => array_merge($array, [$id, $this->id]), []);
+    DB::query("INSERT INTO user_event (user_id, event_id) VALUES ". TableRecords::commaSeparatedValuesForIN("('%s', %d)", count($ids)) , ...$values);
+  }
+
   public function formatDate() {
     $this->startDatetimeString = $this->startDatetime->format('Y-m-d\TH:i');
     $this->endDatetimeString = $this->endDatetime->format('Y-m-d\TH:i');
   }
-
-  // static function getEvents(string $name_exp): array {
-  //   $db = new DB();
-  //   $db->connect();
-
-  //   // $id_exp = $id_exp or '*';
-  //   $name_exp = $db->escape($name_exp) or '*';
-
-  
-  //   // $query = sprintf("SELECT * FROM WHERE `id`=%d AND `name` LIKE  LIMIT 50", $id_exp, $name_exp);
-  //   $res = $db->conn->query($query);
-
-  //   return $res->fetch_all();
-  // }
 }

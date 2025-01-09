@@ -3,11 +3,11 @@ header("Content-Type:application/json");
 
 require '../vendor/autoload.php';
 
-use Fahd\NSS\Auth\CookieHandler;
-use Fahd\NSS\Auth\SessionHandler;
-use Fahd\NSS\Auth\Login;
-use Fahd\NSS\Utils\Response;
-use Fahd\NSS\Utils\Status;
+use NSS\Auth\CookieHandler;
+use NSS\Auth\SessionHandler;
+use NSS\Auth\Login;
+use NSS\Utils\Response;
+use NSS\Utils\Status;
 
 if(!(isset($_POST['id']) && isset($_POST['pwd']))) Response::respond(Status::Error, "Error: Inadequate Prompt");
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Fahd\NSS\Auth;
+namespace NSS\Auth;
 
 class CookieHandler {
   public string $username;

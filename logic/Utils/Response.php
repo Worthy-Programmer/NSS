@@ -1,6 +1,6 @@
 <?php
 
-namespace Fahd\NSS\Utils;
+namespace NSS\Utils;
 
 
 class Response {

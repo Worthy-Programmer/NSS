@@ -11,7 +11,7 @@ function checkLogin(e) {
   }
 
 
-  fetch('../api/login.php', headers).then(res => {
+  fetch('/api/login.php', headers).then(res => {
     if (!res.ok)
       throw new Error(`HTTP error! Status ${res.status}`);
     return res.json();
@@ -37,7 +37,7 @@ function showRes(responseJSON) {
 function changeFilePath() {
   const filePath = location.href;
   const dirPath = filePath.substring(0, filePath.lastIndexOf("/") + 1);
-  const dashboardPage = dirPath + 'dashboard.php';
+  const dashboardPage = dirPath + '../dashboard.php';
   location.href = dashboardPage;
 }
 
